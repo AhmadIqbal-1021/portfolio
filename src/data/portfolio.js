@@ -10,6 +10,7 @@ export const personal = {
   location: 'Lahore, Pakistan',
   email: 'ahmadiqbal1021412@gmail.com',
   github: 'https://github.com/AhmadIqbal-1021/',
+  linkedin: 'https://www.linkedin.com/in/ahmad-iqbal1021',
   fiverr: 'https://www.fiverr.com/m_ahmad_iqbal21/',
   upwork: 'upwork.com/freelancers/ahmadiqbal',
   bio: `I build Chrome Extensions, web scrapers, and full-stack apps that automate what slows your business down. From eCommerce data extraction to AI-powered tools — I ship production-grade software.`,
