@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { ArrowRight, Mail, Download } from 'lucide-react'
 import { personal, stats } from '../data/portfolio'
 
 const fadeUp = (delay = 0) => ({
@@ -76,12 +77,12 @@ export default function Hero() {
             {...fadeUp(0.4)}
             className="flex gap-3 flex-wrap mb-12"
           >
-            {/* View Work */}
+            {/* View My Work */}
             <button
               onClick={() => scrollTo('#projects')}
               className="inline-flex items-center gap-2 px-7 py-3.5 bg-accent text-bg font-mono text-xs tracking-widest uppercase font-bold rounded-sm border border-accent transition-all duration-200 hover:bg-transparent hover:text-accent cursor-pointer"
             >
-              <span>▸</span> View My Work
+              <ArrowRight size={14} /> View My Work
             </button>
 
             {/* Hire Me */}
@@ -89,19 +90,16 @@ export default function Hero() {
               onClick={() => scrollTo('#contact')}
               className="inline-flex items-center gap-2 px-7 py-3.5 bg-transparent text-text font-mono text-xs tracking-widest uppercase border border-border-2 rounded-sm transition-all duration-200 hover:border-accent hover:text-accent cursor-pointer"
             >
-              <span>✉</span> Hire Me
+              <Mail size={14} /> Hire Me
             </button>
 
-            {/* ── Download CV button ──────────────────────────────────── */}
-            {/* The `download` attribute tells the browser to download the   */}
-            {/* file instead of opening it. The file must be in /public/.    */}
+            {/* Download CV */}
             <a
               href="/cv.pdf"
               download="Muhammad_Ahmad_Iqbal_CV.pdf"
               className="inline-flex items-center gap-2 px-7 py-3.5 bg-accent text-bg font-mono text-xs tracking-widest uppercase font-bold rounded-sm border border-accent transition-all duration-200 hover:bg-transparent hover:text-accent cursor-pointer"
             >
-              <DownloadIcon />
-              Download CV
+              <Download size={14} /> Download CV
             </a>
           </motion.div>
 
@@ -137,26 +135,6 @@ export default function Hero() {
         <div className="scroll-line" />
       </div>
     </section>
-  )
-}
-
-// ── Download icon SVG ─────────────────────────────────────────────────────────
-function DownloadIcon() {
-  return (
-    <svg
-      width="13"
-      height="13"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-      <polyline points="7 10 12 15 17 10" />
-      <line x1="12" y1="15" x2="12" y2="3" />
-    </svg>
   )
 }
 

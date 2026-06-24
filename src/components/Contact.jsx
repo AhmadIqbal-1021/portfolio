@@ -1,66 +1,57 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { Mail, MapPin, Github, Linkedin, Globe, Code, ExternalLink } from 'lucide-react'
 import SectionHeader from './SectionHeader'
 import { personal } from '../data/portfolio'
 
-// ─── YOUR CONTACT LINKS ───────────────────────────────────────────────────────
-// Each item has an href — if href is set, the whole row becomes a clickable link
-// that opens in a new tab. If href is null it's just a display row.
-const contactItems = [
+// ─── EMAILJS CREDENTIALS ─────────────────────────────────────────────────────
+const EMAILJS_SERVICE_ID  = 'service_12dvqn9'
+const EMAILJS_TEMPLATE_ID = 'template_ujvel1u'
+const EMAILJS_PUBLIC_KEY  = 'oNxDGJdSatmbNISfD'
+
+// ─── CONTACT LINKS ────────────────────────────────────────────────────────────
+// Built from personal data — href makes the row clickable, null means display only
+const buildContactItems = () => [
   {
-    icon: '✉️',
+    icon: <Mail size={18} />,
     label: 'Email',
     value: personal.email,
     href: `mailto:${personal.email}`,
   },
   {
-    icon: '📍',
+    icon: <MapPin size={18} />,
     label: 'Location',
     value: 'Lahore, Pakistan (Remote Available)',
     href: null,
   },
   {
-    icon: '🐙',
+    icon: <Github size={18} />,
     label: 'GitHub',
-    value: personal.github?.replace('https://', '') ?? personal.github,
+    value: personal.github?.replace('https://', ''),
     href: personal.github,
   },
   {
-    icon: '💼',
+    icon: <Linkedin size={18} />,
     label: 'LinkedIn',
-    value: personal.linkedin?.replace('https://', '') ?? personal.linkedin,
+    value: personal.linkedin?.replace('https://', ''),
     href: personal.linkedin,
   },
   {
-    icon: '🟢',
+    icon: <Code size={18} />,
     label: 'Fiverr',
-    value: personal.fiverr?.replace('https://', '') ?? personal.fiverr,
+    value: personal.fiverr?.replace('https://', ''),
     href: personal.fiverr,
   },
   {
-    icon: '🌐',
+    icon: <Globe size={18} />,
     label: 'Upwork',
-    value: personal.upwork?.replace('https://', '') ?? personal.upwork,
+    value: personal.upwork?.replace('https://', ''),
     href: personal.upwork,
   },
 ]
 
-// ─── EMAILJS SETUP ────────────────────────────────────────────────────────────
-// 1. Go to https://emailjs.com and create a FREE account
-// 2. Add an Email Service (Gmail recommended) → copy the Service ID
-// 3. Create an Email Template → copy the Template ID
-//    In the template body use these variables:
-//      From: {{from_name}} ({{from_email}})
-//      Message: {{message}}
-//      Subject: {{subject}}
-// 4. Go to Account → API Keys → copy your Public Key
-// 5. Paste all three values below:
-const EMAILJS_SERVICE_ID  = 'service_12dvqn9'   // e.g. 'service_abc123'
-const EMAILJS_TEMPLATE_ID = 'template_ujvel1u'  // e.g. 'template_xyz789'
-const EMAILJS_PUBLIC_KEY  = 'oNxDGJdSatmbNISfD'   // e.g. 'aBcDeFgHiJkLmNoP'
-
 export default function Contact() {
-  // ── Form field state ─────────────────────────────────────────────────────
+  // ── Form fields state ─────────────────────────────────────────────────────
   const [fields, setFields] = useState({
     from_name: '',
     from_email: '',
@@ -68,31 +59,32 @@ export default function Contact() {
     message: '',
   })
 
-  // ── Submission state: idle | sending | success | error ───────────────────
+  // ── Status: idle | sending | success | error ──────────────────────────────
   const [status, setStatus] = useState('idle')
   const [errorMsg, setErrorMsg] = useState('')
 
-  // ── Update a single field ─────────────────────────────────────────────────
+  const contactItems = buildContactItems()
+
+  // ── Update single field on every keystroke ────────────────────────────────
   const handleChange = (e) => {
     setFields((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  // ── Submit: send via EmailJS, then clear fields ───────────────────────────
+  // ── Submit form ───────────────────────────────────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setStatus('sending')
     setErrorMsg('')
 
-    // Basic validation — don't send empty form
+    // Validation
     if (!fields.from_name || !fields.from_email || !fields.message) {
       setStatus('error')
       setErrorMsg('Please fill in Name, Email, and Message.')
       return
     }
 
+    setStatus('sending')
+
     try {
-      // EmailJS sends the email directly from the browser — no backend needed.
-      // It loads their SDK from CDN on first use here.
       const emailjs = await loadEmailJS()
 
       await emailjs.send(
@@ -103,16 +95,14 @@ export default function Contact() {
           from_email: fields.from_email,
           subject:    fields.subject || 'Portfolio Contact',
           message:    fields.message,
-          to_email:   personal.email,   // where YOU receive it
+          to_email:   personal.email,
         },
         EMAILJS_PUBLIC_KEY
       )
 
-      // ✅ Success — clear all fields
+      // Clear all fields on success
       setFields({ from_name: '', from_email: '', subject: '', message: '' })
       setStatus('success')
-
-      // Reset back to idle after 4 seconds
       setTimeout(() => setStatus('idle'), 4000)
 
     } catch (err) {
@@ -130,7 +120,7 @@ export default function Contact() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
 
-          {/* ── Left: contact info links ──────────────────────────────────── */}
+          {/* ── Left: contact info ────────────────────────────────────────── */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -205,7 +195,7 @@ export default function Contact() {
                 <p className="font-mono text-xs text-accent-3">{errorMsg}</p>
               )}
 
-              {/* Submit button — changes appearance based on status */}
+              {/* Submit button */}
               <button
                 type="submit"
                 disabled={status === 'sending'}
@@ -228,6 +218,7 @@ export default function Contact() {
               </p>
             </form>
           </motion.div>
+
         </div>
       </div>
     </section>
@@ -235,32 +226,38 @@ export default function Contact() {
 }
 
 // ─── CONTACT ROW ──────────────────────────────────────────────────────────────
-// If item.href exists → render as <a> (clickable, opens new tab)
-// If item.href is null → render as <div> (just display)
+// Renders as <a> if href exists (clickable), <div> if href is null (display only)
 function ContactRow({ item, index }) {
   const baseClasses =
     'contact-item flex items-center gap-4 px-5 py-4 bg-surface border border-border rounded transition-all duration-300 hover:bg-surface-2'
 
   const inner = (
     <>
-      <div className="w-10 h-10 rounded bg-accent/[0.08] flex items-center justify-center text-lg flex-shrink-0">
+      {/* Icon box */}
+      <div className="w-10 h-10 rounded bg-accent/[0.08] flex items-center justify-center text-accent flex-shrink-0">
         {item.icon}
       </div>
-      <div>
+
+      {/* Label + value */}
+      <div className="min-w-0">
         <div className="font-mono text-[10px] text-text-3 tracking-wide uppercase mb-0.5">
           {item.label}
         </div>
-        <div className={`text-sm ${item.href ? 'text-accent' : 'text-text'}`}>
+        <div className={`text-sm truncate ${item.href ? 'text-accent' : 'text-text'}`}>
           {item.value}
         </div>
       </div>
-      {/* Arrow indicator if clickable */}
+
+      {/* External link arrow — only on clickable rows */}
       {item.href && (
-        <div className="ml-auto text-text-3 text-xs">↗</div>
+        <div className="ml-auto text-text-3 flex-shrink-0">
+          <ExternalLink size={14} />
+        </div>
       )}
     </>
   )
 
+  // Clickable row
   if (item.href) {
     return (
       <motion.a
@@ -279,6 +276,7 @@ function ContactRow({ item, index }) {
     )
   }
 
+  // Display-only row
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
@@ -293,7 +291,6 @@ function ContactRow({ item, index }) {
 }
 
 // ─── FORM FIELD ───────────────────────────────────────────────────────────────
-// Controlled input — value comes from parent state, onChange updates parent state
 function FormField({ label, name, type, placeholder, value, onChange }) {
   return (
     <div className="flex flex-col gap-2">
@@ -304,8 +301,8 @@ function FormField({ label, name, type, placeholder, value, onChange }) {
         type={type}
         name={name}
         placeholder={placeholder}
-        value={value}           // controlled: always shows state value
-        onChange={onChange}     // updates state on every keystroke
+        value={value}
+        onChange={onChange}
         className="bg-surface border border-border text-text px-4 py-3 font-sans text-sm rounded focus:border-accent outline-none transition-colors duration-200 placeholder:text-text-3"
       />
     </div>
@@ -313,11 +310,9 @@ function FormField({ label, name, type, placeholder, value, onChange }) {
 }
 
 // ─── EMAILJS LAZY LOADER ──────────────────────────────────────────────────────
-// Loads the EmailJS SDK from CDN only when the form is submitted.
-// This avoids adding it as a dependency — works via script tag injection.
+// Loads EmailJS from CDN only on first form submission — no extra dependency needed
 function loadEmailJS() {
   return new Promise((resolve, reject) => {
-    // If already loaded, return immediately
     if (window.emailjs) {
       resolve(window.emailjs)
       return
