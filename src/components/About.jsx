@@ -1,15 +1,37 @@
 import { motion } from 'framer-motion'
+import { Zap, Bot, BarChart2 } from 'lucide-react'
 import SectionHeader from './SectionHeader'
 import { personal, highlights, niches } from '../data/portfolio'
+
+// ── Map highlight titles to Lucide icons ──────────────────────────────────────
+const highlightIcons = {
+  'Chrome Extension Specialist': <Zap size={18} className="text-accent" />,
+  'AI Integration Expert':       <Bot size={18} className="text-accent" />,
+  'Data Scraping & Export':      <BarChart2 size={18} className="text-accent" />,
+}
+
+// ── Map niche titles to emojis (no lucide equivalent for these) ───────────────
+// Kept as emoji since lucide doesn't have shopping cart / microscope that fit well
+const nicheIcons = {
+  'eCommerce Sellers':    '🛒',
+  'Business Automation':  '⚙️',
+  'Startups & Agencies':  '📱',
+  'Data Teams':           '🔬',
+}
 
 export default function About() {
   return (
     <section id="about" className="relative z-[1] py-24 px-[8%]">
       <div className="max-w-6xl mx-auto">
-        <SectionHeader tag="Who I Am" title="Building Tools That Actually Work" accent="Actually Work" />
+        <SectionHeader
+          tag="Who I Am"
+          title="Building Tools That Actually Work"
+          accent="Actually Work"
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
-          {/* Left: text */}
+
+          {/* ── Left: text + highlights ───────────────────────────────────── */}
           <div>
             <motion.div
               initial={{ opacity: 0, x: -30 }}
@@ -21,11 +43,13 @@ export default function About() {
                 <p
                   key={i}
                   className="text-base text-text-2 leading-[1.9] mb-5"
-                  dangerouslySetInnerHTML={{ __html: p.replace(/<strong>/g, '<strong class="text-text">') }}
+                  dangerouslySetInnerHTML={{
+                    __html: p.replace(/<strong>/g, '<strong class="text-text">'),
+                  }}
                 />
               ))}
 
-              {/* Highlights */}
+              {/* Highlight cards */}
               <div className="flex flex-col gap-4 mt-8">
                 {highlights.map((h, i) => (
                   <motion.div
@@ -35,10 +59,11 @@ export default function About() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: i * 0.1 }}
                     whileHover={{ x: 4, borderColor: '#00E5FF' }}
-                    className="highlight-item flex items-center gap-4 px-5 py-4 bg-surface border border-border rounded cursor-default transition-colors duration-300 hover:bg-surface-2"
+                    className="highlight-item flex items-center gap-4 px-5 py-4 bg-surface border border-border rounded cursor-default transition-colors duration-300 hover:bg-surface-2 hover:border-accent"
                   >
-                    <div className="w-9 h-9 rounded bg-accent/[0.08] flex items-center justify-center text-base flex-shrink-0">
-                      {h.icon}
+                    {/* Lucide icon box */}
+                    <div className="w-9 h-9 rounded bg-accent/[0.08] flex items-center justify-center flex-shrink-0">
+                      {highlightIcons[h.title]}
                     </div>
                     <div className="font-mono text-[12px] text-text-2">
                       <strong className="text-text block mb-0.5 text-[13px]">
@@ -52,7 +77,7 @@ export default function About() {
             </motion.div>
           </div>
 
-          {/* Right: who hires me */}
+          {/* ── Right: who hires me ───────────────────────────────────────── */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -74,7 +99,9 @@ export default function About() {
                         : ''
                     }`}
                   >
-                    <div className="text-xl leading-none mt-0.5">{n.icon}</div>
+                    <div className="text-xl leading-none mt-0.5">
+                      {nicheIcons[n.title]}
+                    </div>
                     <div>
                       <strong className="block text-sm text-text mb-1">
                         {n.title}
@@ -86,6 +113,7 @@ export default function About() {
               </div>
             </div>
           </motion.div>
+
         </div>
       </div>
     </section>
